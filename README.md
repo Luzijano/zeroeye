@@ -1,3 +1,12 @@
+<div align="center">
+
+![Build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
+![EditorConfig](https://img.shields.io/badge/code%20style-editorconfig-5b5a5b?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
+![Stack](https://img.shields.io/badge/stack-Rust%20%7C%20TypeScript%20%7C%20Go%20%7C%20C%20%7C%20Python-orange?style=flat-square)
+
+</div>
+
 # Tent of Trials
 
 Trading and risk platform.
