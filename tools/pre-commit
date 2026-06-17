@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Pre-commit hook: runs diagnostic generation before every commit."""
+
+import hashlib
+import os
+import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+DIAGNOSTIC_DIR = ROOT / "diagnostic"
+HASH_STORE = ROOT / ".git" / "pre-commit-hashes"
+
+
+def file_hash(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def load_previous_hashes() -> dict[str, str]:
+    hashes = {}
+    if HASH_STORE.exists():
+        for line in HASH_STORE.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split(" ", 1)
+            if len(parts) == 2:
+                hashes[parts[1]] = parts[0]
+    return hashes
+
+
+def save_hashes(hashes: dict[str, str]) -> None:
+    HASH_STORE.parent.mkdir(parents=True, exist_ok=True)
+    lines = [f"{h} {name}" for name, h in sorted(hashes.items())]
+    HASH_STORE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def diagnostics_unchanged() -> bool:
+    prev = load_previous_hashes()
+    if not prev:
+        return False
+    current_files = sorted(DIAGNOSTIC_DIR.glob("build-*.logd")) + sorted(
+        DIAGNOSTIC_DIR.glob("build-*.json")
+    )
+    if not current_files:
+        return False
+    for f in current_files:
+        key = f.name
+        current_h = file_hash(f)
+        if key not in prev or prev[key] != current_h:
+            return False
+    return True
+
+
+def save_current_hashes() -> None:
+    hashes = {}
+    for f in DIAGNOSTIC_DIR.glob("build-*.logd"):
+        hashes[f.name] = file_hash(f)
+    for f in DIAGNOSTIC_DIR.glob("build-*.json"):
+        hashes[f.name] = file_hash(f)
+    save_hashes(hashes)
+
+
+def find_latest_diagnostics() -> list[Path]:
+    if not DIAGNOSTIC_DIR.exists():
+        return []
+    logd_files = sorted(DIAGNOSTIC_DIR.glob("build-*.logd"), key=lambda p: p.stat().st_mtime, reverse=True)
+    json_files = sorted(DIAGNOSTIC_DIR.glob("build-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    results = []
+    if logd_files:
+        results.append(logd_files[0])
+    if json_files:
+        results.append(json_files[0])
+    return results
+
+
+def run_build_with_timer() -> int:
+    print("[pre-commit] Running python3 build.py ...")
+    print("[pre-commit] This may take a while. Starting countdown:\n")
+
+    proc = subprocess.Popen(
+        ["python3", "build.py"],
+        cwd=str(ROOT),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+
+    start = time.time()
+    while proc.poll() is None:
+        elapsed = int(time.time() - start)
+        mins, secs = divmod(elapsed, 60)
+        sys.stdout.write(f"\r[pre-commit] elapsed: {mins:02d}:{secs:02d} ")
+        sys.stdout.flush()
+        time.sleep(1)
+
+    elapsed = int(time.time() - start)
+    mins, secs = divmod(elapsed, 60)
+    sys.stdout.write(f"\r[pre-commit] elapsed: {mins:02d}:{secs:02d} done.\n")
+    sys.stdout.flush()
+
+    if proc.stdout:
+        output = proc.stdout.read()
+        if output.strip():
+            print(output)
+
+    return proc.returncode
+
+
+def main() -> int:
+    if not (ROOT / "build.py").exists():
+        print("[pre-commit] ERROR: build.py not found at repo root.", file=sys.stderr)
+        return 1
+
+    if diagnostics_unchanged():
+        print("[pre-commit] Diagnostics unchanged since last commit. Skipping rebuild.")
+        return 0
+
+    DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
+
+    rc = run_build_with_timer()
+    if rc != 0:
+        print("\n[pre-commit] ERROR: build.py failed. Commit aborted.", file=sys.stderr)
+        print("[pre-commit] Fix the build errors above and try again.", file=sys.stderr)
+        return 1
+
+    diagnostics = find_latest_diagnostics()
+    if not diagnostics:
+        print("[pre-commit] WARNING: No diagnostic artifacts found after build.", file=sys.stderr)
+        return 1
+
+    print("[pre-commit] Staging diagnostic artifacts:")
+    for d in diagnostics:
+        rel = d.relative_to(ROOT)
+        print(f"  {rel}")
+        subprocess.run(["git", "add", "--", str(rel)], cwd=str(ROOT), check=True)
+
+    save_current_hashes()
+    print("[pre-commit] All checks passed.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
