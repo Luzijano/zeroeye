@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/actions/workflows/diagnostic-build-log.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/diagnostic-build-log.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="https://github.com/rust-lang/rustfmt"><img alt="Code style: rustfmt" src="https://img.shields.io/badge/code%20style-rustfmt-f46623?style=flat-square"></a>
+  <a href="#code-licenses"><img alt="License: MIT / Apache-2.0" src="https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue?style=flat-square"></a>
+  <a href="https://www.rust-lang.org/"><img alt="Rust" src="https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white&style=flat-square"></a>
+  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white&style=flat-square"></a>
+  <a href="https://react.dev/"><img alt="React" src="https://img.shields.io/badge/React-20232a?logo=react&logoColor=61dafb&style=flat-square"></a>
+</p>
+
 # Tent of Trials
 
 Trading and risk platform.
