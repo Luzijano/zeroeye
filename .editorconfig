@@ -1,0 +1,47 @@
+# WARNING: Keep this file in sync with tools/check_format.sh when adding or changing language formatting rules.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{c,h,cpp,cxx,cc,hpp,hxx}]
+indent_size = 4
+
+[*.go]
+indent_style = tab
+indent_size = 4
+
+[*.rs]
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.{sh,bash,zsh}]
+indent_size = 2
+
+[*.{js,jsx,ts,tsx,json,html,css,yml,yaml,md,tf,lua,rb,pl,java,hs,sql,toml,lock,sum,mod,txt,gitignore}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.mk]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{png,exe,logd,tsbuildinfo}]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset
