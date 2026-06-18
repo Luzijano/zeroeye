@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-18T22:55:34.610257+00:00",
+  "commit": "c2e74bc8",
+  "diagnostic_logd": [
+    "diagnostic/build-c2e74bc8-part001.logd",
+    "diagnostic/build-c2e74bc8-part002.logd",
+    "diagnostic/build-c2e74bc8-part003.logd",
+    "diagnostic/build-c2e74bc8-part004.logd",
+    "diagnostic/build-c2e74bc8-part005.logd",
+    "diagnostic/build-c2e74bc8-part006.logd",
+    "diagnostic/build-c2e74bc8-part007.logd",
+    "diagnostic/build-c2e74bc8-part008.logd",
+    "diagnostic/build-c2e74bc8-part009.logd",
+    "diagnostic/build-c2e74bc8-part010.logd",
+    "diagnostic/build-c2e74bc8-part011.logd"
+  ],
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": true,
+  "chunk_size_bytes": 41943040,
+  "password": "76c2c2292e1189c061c1",
+  "decrypt_command": "encryptly unpack diagnostic/build-c2e74bc8.logd <outdir> --password 76c2c2292e1189c061c1",
+  "total_modules": 1,
+  "passed": 0,
+  "failed": 1,
+  "modules": [
+    {
+      "name": "encryptly-preflight",
+      "status": "FAIL",
+      "elapsed_seconds": 21.478,
+      "artifact": null,
+      "output": "encryptly could not create an archive. You may have timed out; try launching it in the background and waiting for it to finish with no timeout due to a bug in encryptly. encryptly preflight completed without creating a .logd"
+    }
+  ],
+  "pr_note": "Include the encrypted diagnostic logd artifact(s): diagnostic/build-c2e74bc8-part001.logd, diagnostic/build-c2e74bc8-part002.logd, diagnostic/build-c2e74bc8-part003.logd, diagnostic/build-c2e74bc8-part004.logd, diagnostic/build-c2e74bc8-part005.logd, diagnostic/build-c2e74bc8-part006.logd, diagnostic/build-c2e74bc8-part007.logd, diagnostic/build-c2e74bc8-part008.logd, diagnostic/build-c2e74bc8-part009.logd, diagnostic/build-c2e74bc8-part010.logd, diagnostic/build-c2e74bc8-part011.logd. The encrypted .logd is the required diagnostic content for PR review; this JSON file is metadata. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
