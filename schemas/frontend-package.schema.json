@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cuentaprueba244w-dotcom/zeroeye/main/schemas/frontend-package.schema.json",
+  "title": "ZeroEye Frontend package.json Configuration",
+  "description": "Schema for the frontend/package.json configuration used by the ZeroEye Vite React frontend package.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "private",
+    "version",
+    "type",
+    "scripts",
+    "dependencies",
+    "devDependencies"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "NPM package name for the frontend application.",
+      "minLength": 1,
+      "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the frontend package is private and should not be published."
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version for the frontend package.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Node module format used by the frontend package.",
+      "enum": [
+        "module",
+        "commonjs"
+      ]
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM scripts used for local development, production builds, and previewing the built frontend.",
+      "required": [
+        "dev",
+        "build",
+        "preview"
+      ],
+      "properties": {
+        "dev": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Starts the local frontend development server."
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Creates a production frontend build."
+        },
+        "preview": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Serves the built frontend for local preview."
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dependencies": {
+      "$ref": "#/$defs/dependencyMap",
+      "description": "Runtime npm dependencies required by the frontend application."
+    },
+    "devDependencies": {
+      "$ref": "#/$defs/dependencyMap",
+      "description": "Development and build-time npm dependencies for the frontend package."
+    },
+    "packageManager": {
+      "type": "string",
+      "description": "Optional package manager declaration such as npm@10.8.2 or pnpm@9.0.0.",
+      "pattern": "^[A-Za-z0-9._-]+@[0-9A-Za-z._+-]+$"
+    },
+    "engines": {
+      "type": "object",
+      "description": "Optional runtime engine constraints.",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "dependencyMap": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "NPM version, semver range, tag, file path, workspace reference, or git specifier.",
+        "minLength": 1
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "tent-frontend",
+      "private": true,
+      "version": "0.0.0",
+      "type": "module",
+      "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "preview": "vite preview"
+      },
+      "dependencies": {
+        "@tanstack/react-query": "^5.75.5",
+        "immer": "^10.2.0",
+        "lightweight-charts": "^5.2.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router-dom": "^7.6.2",
+        "uuid": "^14.0.0",
+        "zustand": "^5.0.14"
+      },
+      "devDependencies": {
+        "@types/node": "^25.9.3",
+        "@types/react": "^19.1.4",
+        "@types/react-dom": "^19.1.5",
+        "@vitejs/plugin-react": "^4.4.1",
+        "typescript": "~5.8.3",
+        "vite": "^6.3.5"
+      }
+    }
+  ]
+}
