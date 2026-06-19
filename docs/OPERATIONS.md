@@ -276,6 +276,26 @@ Audit logs are retained for 365 days and include:
 | Penetration test | Quarterly | External vendor |
 | Compliance audit | Annually | External auditor |
 
+## Diagnostic diff regression gate
+
+Compare two diagnostic metadata reports with:
+
+```bash
+python3 tools/diagnostic_diff.py diagnostic/build-BASELINE.json diagnostic/build-NEW.json
+```
+
+The default comparison reports module additions, removals, status changes, duration deltas, command changes, artifact changes, and a JSON-compatible `regressions: [...]` summary line. Without gate mode, the command exits `0` even if regressions are listed so reviewers can inspect the diff manually.
+
+Use the regression gate in CI or local validation with:
+
+```bash
+python3 tools/diagnostic_diff.py --fail-on-regression diagnostic/build-BASELINE.json diagnostic/build-NEW.json
+```
+
+With `--fail-on-regression`, the command exits `1` when a module changes from `PASS` to `FAIL`, `ERROR`, or is missing from the newer metadata. A `FAIL` to `PASS` change and an unchanged failure are not regressions and exit `0`.
+
+For machine readers that need the full structured summary, add `--json`.
+
 ## Troubleshooting
 
 ### Common Issues
